@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace FamilyTree.Data.Migrations
+namespace NetCoreReactTemplate.Data.Migrations
 {
     public partial class CreateIdentitySchema : Migration
     {

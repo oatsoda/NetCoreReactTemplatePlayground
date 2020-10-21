@@ -1,4 +1,4 @@
-namespace FamilyTree
+namespace NetCoreReactTemplate
 {
     public class GoogleAuthSettings
     {

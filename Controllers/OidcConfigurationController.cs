@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace FamilyTree.Controllers
+namespace NetCoreReactTemplate.Controllers
 {
     public class OidcConfigurationController : Controller
     {
