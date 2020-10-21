@@ -9,7 +9,7 @@ export interface IProps {
 export interface IState {
     isReady: boolean;
     authenticated: boolean;
-    message: string;
+    message?: string;
 }
 
 // The main responsibility of this component is to handle the user's logout process.
@@ -20,7 +20,7 @@ export class Logout extends Component<IProps, IState> {
         super(props);
 
         this.state = {
-            message: "",// undefined,
+            message: undefined,
             isReady: false,
             authenticated: false
         };
@@ -31,7 +31,7 @@ export class Logout extends Component<IProps, IState> {
         switch (action) {
             case LogoutActions.Logout:
                 if (!!window.history.state.state.local) {
-                    this.logout(this.getReturnUrl({ returnUrl: "" }));
+                    this.logout(this.getReturnUrl());
                 } else {
                     // This prevents regular links to <app>/authentication/logout from triggering a logout
                     this.setState({ isReady: true, message: "The logout was not initiated from within the page." });
@@ -84,7 +84,7 @@ export class Logout extends Component<IProps, IState> {
                     await this.navigateToReturnUrl(returnUrl);
                     break;
                 case AuthenticationResultStatus.Fail:
-                    this.setState({ message: result.message });
+                    this.setState({ message: result.errorMessage });
                     break;
                 default:
                     throw new Error("Invalid authentication result status.");
@@ -106,7 +106,7 @@ export class Logout extends Component<IProps, IState> {
                 await this.navigateToReturnUrl(this.getReturnUrl(result.state));
                 break;
             case AuthenticationResultStatus.Fail:
-                this.setState({ message: result.message });
+                this.setState({ message: result.errorMessage });
                 break;
             default:
                 throw new Error("Invalid authentication result status.");
@@ -118,7 +118,7 @@ export class Logout extends Component<IProps, IState> {
         this.setState({ isReady: true, authenticated });
     }
 
-    getReturnUrl(state: IResultState) {
+    getReturnUrl(state?: { returnUrl: string }) {
         const params = new URLSearchParams(window.location.search);
         const fromQuery = params.get(QueryParameterNames.ReturnUrl);
         if (fromQuery && !fromQuery.startsWith(`${window.location.origin}/`)) {
@@ -133,8 +133,4 @@ export class Logout extends Component<IProps, IState> {
     navigateToReturnUrl(returnUrl: string) {
         return window.location.replace(returnUrl);
     }
-}
-
-export interface IResultState {
-    returnUrl: string;
 }

@@ -129,7 +129,7 @@ export class AuthorizeService {
         try {
             const response = await this.getUserManager().signoutCallback(url);
             this.updateState();
-            return this.success(response && response.data);
+            return this.success(response && response.state);// .data); // TODO: Is this correct?
         } catch (error) {
             console.log(`There was an error trying to log out '${error}'.`);
             return this.error(error);
@@ -151,7 +151,7 @@ export class AuthorizeService {
         const subscriptionIndex = this._callbacks
             .map((element, index) => element.subscription === subscriptionId 
             ? { found: true, index } 
-            : { found: false })
+            : { found: false, index: -1 })
             .filter(element => element.found === true);
         if (subscriptionIndex.length !== 1) {
             throw new Error(`Found an invalid number of subscriptions ${subscriptionIndex.length}`);
@@ -171,15 +171,15 @@ export class AuthorizeService {
         return { useReplaceToNavigate: true, data: state };
     }
 
-    error(message: string) {
-        return { status: AuthenticationResultStatus.Fail, message };
+    error(errorMessage: string) : IResult {
+        return { status: AuthenticationResultStatus.Fail, errorMessage };
     }
 
-    success(state: any) {
+    success(state: any) : IResult {
         return { status: AuthenticationResultStatus.Success, state };
     }
 
-    redirect() {
+    redirect() : IResult {
         return { status: AuthenticationResultStatus.Redirect };
     }
 
@@ -228,3 +228,9 @@ export const AuthenticationResultStatus = {
     Success: 'success',
     Fail: 'fail'
 };
+
+export interface IResult {
+    status: string;
+    errorMessage?: string;
+    state?: any;
+}
